@@ -3,13 +3,10 @@ contract DSActionStructUser {
         address target;
         uint value;
         bytes calldata;
-        // bool triggered;
     }
-    // todo store call_ret by default?
 }
-// A base contract used by governance contracts in `gov` and by the generic `DSController`.
+// A base contract used by anything that wants to do "untyped" calls
 contract DSBaseActor is DSActionStructUser {
-    // todo gas???
     function tryExec(Action a) internal returns (bool call_ret) {
         return a.target.call.value(a.value)(a.calldata);
     }
