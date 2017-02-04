@@ -1,8 +1,0 @@
-name: ds-actor
-version: 0.1.0
-tags: []
-layout:
-  sol_sources: contracts
-  build_dir: build
-dependencies: {}
-ignore: []
