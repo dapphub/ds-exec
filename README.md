@@ -4,7 +4,7 @@ ds-actor
 Base contract which wraps `.call` with internals `.exec` and `.tryExec`, which handle exceptions more naturally.
 
 ```
-contract DSBaseActor {
+contract DSActor {
     function tryExec( address target, bytes calldata, uint value)
              internal
              returns (bool call_ret)
