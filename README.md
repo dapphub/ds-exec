@@ -21,4 +21,3 @@ contract DSActor {
 }
 ```
 
-Audited version in historical dappsys repo
