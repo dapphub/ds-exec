@@ -16,7 +16,7 @@
 
 // A base contract used by anything that wants to do "untyped" calls
 
-pragma solidity ^0.4.9;
+pragma solidity ^0.4.8;
 
 contract DSActor {
     function tryExec( address target, bytes calldata, uint value)
