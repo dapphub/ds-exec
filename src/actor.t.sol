@@ -14,6 +14,8 @@ contract DSSimpleActor is DSActor {
     {
         return tryExec(target, calldata, value);
     }
+
+    function() payable {}
 }
 
 
@@ -54,41 +56,39 @@ contract DSActorTest is DSTest {
         cr = new CallReceiver();
     }
     function testProxyCall() {
-        // for(var i = 0; i < 35; i++) {
-        //     calldata.push(byte(i));
-        // }
-        // a.execute(address(cr), calldata, 0);
-        // assert(cr.compareLastCalldata(calldata));
+        for(var i = 0; i < 35; i++) {
+            calldata.push(byte(i));
+        }
+        a.execute(address(cr), calldata, 0);
+        assert(cr.compareLastCalldata(calldata));
     }
-    // function testTryProxyCall() {
-    //     for(var i = 0; i < 35; i++) {
-    //         calldata.push(byte(i));
-    //     }
-    //     assert(a.tryExecute(address(cr), calldata, 0));
-    //     assert(cr.compareLastCalldata(calldata));
-    // }
-    // function testProxyCallWithValue() {
-    //     assertEq(cr.balance, 0);
+    function testTryProxyCall() {
+        for(var i = 0; i < 35; i++) {
+            calldata.push(byte(i));
+        }
+        assert(a.tryExecute(address(cr), calldata, 0));
+        assert(cr.compareLastCalldata(calldata));
+    }
+    function testProxyCallWithValue() {
+        assertEq(cr.balance, 0);
 
-    //     for( var i = 0; i < 35; i++ ) {
-    //         calldata.push(byte(i));
-    //     }
-    //     assertEq(a.balance, 10 wei);
-    //     a.execute(address(cr), calldata, 10 wei);
-    //     assert(cr.compareLastCalldata(calldata));
-    //     assertEq(cr.balance, 10 wei);
-    // }
-    // function testTryProxyCallWithValue() {
-    //     assertEq(cr.balance, 0, "callreceiver already has ether");
+        for( var i = 0; i < 35; i++ ) {
+            calldata.push(byte(i));
+        }
+        assertEq(a.balance, 10 wei);
+        a.execute(address(cr), calldata, 10 wei);
+        assert(cr.compareLastCalldata(calldata));
+        assertEq(cr.balance, 10 wei);
+    }
+    function testTryProxyCallWithValue() {
+        assertEq(cr.balance, 0);
 
-    //     for( var i = 0; i < 35; i++ ) {
-    //         calldata.push(byte(i));
-    //     }
-    //     assertEq(a.balance, 10 wei, "ether not sent to actor");
-    //     assertTrue(a.tryExecute(address(cr), calldata, 10 wei),
-    //                "tryExecute failed");
-    //     assertTrue( cr.compareLastCalldata( calldata ),
-    //                "call data does not match" );
-    //     assertEq(cr.balance, 10 wei);
-    // }
+        for( var i = 0; i < 35; i++ ) {
+            calldata.push(byte(i));
+        }
+        assertEq(a.balance, 10 wei);
+        assert(a.tryExecute(address(cr), calldata, 10 wei));
+        assert(cr.compareLastCalldata(calldata));
+        assertEq(cr.balance, 10 wei);
+    }
 }
