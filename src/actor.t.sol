@@ -1,24 +1,26 @@
-import 'dapple/test.sol';
-import 'dapple/debug.sol';
+pragma solidity ^0.4.8;
 
-import 'base.sol';
+import "ds-test/test.sol";
+import './actor.sol';
 
 // Simple example and passthrough for testing
-contract DSSimpleActor is DSBaseActor {
-    function execute( address target, bytes calldata, uint value )
+contract DSSimpleActor is DSActor {
+    function execute(address target, bytes calldata, uint value)
     {
-        exec( target, calldata, value );
+        exec(target, calldata, value);
     }
-    function tryExecute( address target, bytes calldata, uint value )
-             returns (bool call_ret )
+    function tryExecute(address target, bytes calldata, uint value)
+             returns (bool call_ret)
     {
-        return tryExec( target, calldata, value );
+        return tryExec(target, calldata, value);
     }
+
+    function() payable {}
 }
 
 
 // Test helper: record calldata from fallback and compare.
-contract CallReceiver is Debug {
+contract CallReceiver {
     bytes last_calldata;
     uint last_value;
     function compareLastCalldata( bytes data ) returns (bool) {
@@ -34,61 +36,59 @@ contract CallReceiver is Debug {
         }
         return true;
     }
-    function() {
+    function() payable {
         last_calldata = msg.data;
         last_value = msg.value;
     }
 }
 
 // actually tests "SimpleActorTest"
-contract DSBaseActorTest is Test {
+contract DSActorTest is DSTest {
     bytes calldata;
     DSSimpleActor a;
     CallReceiver cr;
     function setUp() {
-        assertTrue(this.balance > 0, "insufficient funds");
-
+        assert(this.balance > 0);
+        
         a = new DSSimpleActor();
         if (!a.send(10 wei)) throw;
+
         cr = new CallReceiver();
     }
     function testProxyCall() {
-        for( var i = 0; i < 35; i++ ) {
+        for(var i = 0; i < 35; i++) {
             calldata.push(byte(i));
         }
-        a.execute( address(cr), calldata, 0 );
-        assertTrue( cr.compareLastCalldata( calldata ) );
+        a.execute(address(cr), calldata, 0);
+        assert(cr.compareLastCalldata(calldata));
     }
     function testTryProxyCall() {
-        for( var i = 0; i < 35; i++ ) {
+        for(var i = 0; i < 35; i++) {
             calldata.push(byte(i));
         }
-        assertTrue(a.tryExecute( address(cr), calldata, 0 ));
-        assertTrue( cr.compareLastCalldata( calldata ) );
+        assert(a.tryExecute(address(cr), calldata, 0));
+        assert(cr.compareLastCalldata(calldata));
     }
     function testProxyCallWithValue() {
-        assertEq(cr.balance, 0, "callreceiver already has ether");
+        assertEq(cr.balance, 0);
 
         for( var i = 0; i < 35; i++ ) {
             calldata.push(byte(i));
         }
-        assertEq(a.balance, 10 wei, "ether not sent to actor");
+        assertEq(a.balance, 10 wei);
         a.execute(address(cr), calldata, 10 wei);
-        assertTrue( cr.compareLastCalldata( calldata ),
-                   "call data does not match" );
+        assert(cr.compareLastCalldata(calldata));
         assertEq(cr.balance, 10 wei);
     }
     function testTryProxyCallWithValue() {
-        assertEq(cr.balance, 0, "callreceiver already has ether");
+        assertEq(cr.balance, 0);
 
         for( var i = 0; i < 35; i++ ) {
             calldata.push(byte(i));
         }
-        assertEq(a.balance, 10 wei, "ether not sent to actor");
-        assertTrue(a.tryExecute(address(cr), calldata, 10 wei),
-                   "tryExecute failed");
-        assertTrue( cr.compareLastCalldata( calldata ),
-                   "call data does not match" );
+        assertEq(a.balance, 10 wei);
+        assert(a.tryExecute(address(cr), calldata, 10 wei));
+        assert(cr.compareLastCalldata(calldata));
         assertEq(cr.balance, 10 wei);
     }
 }

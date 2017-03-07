@@ -1,20 +1,6 @@
-name: ds-actor
-version: 0.1.0
-tags: []
-layout:
-  sol_sources: ./src
-  build_dir: ./build
-  packages_directory: ./lib
-dependencies: {}
-ignore: []
-description: ''
-authors: []
-license: Apache-2.0
-keywords:
-  - dapple
-dapple_version: 0.8.41
-environments:
-  develop:
-    objects: {}
-    type: internal
-    chain: ''
+name            ds-actor
+description
+version         0.0.1
+
+author          
+license         Apache-2.0
