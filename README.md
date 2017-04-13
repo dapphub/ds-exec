@@ -1,4 +1,4 @@
-ds-actor
+ds-exec
 ===
 
 Base contract which wraps `.call` with internals `.exec` and `.tryExec`, which handle exceptions more naturally.
