@@ -17,10 +17,10 @@
 pragma solidity ^0.4.8;
 
 import "ds-test/test.sol";
-import './actor.sol';
+import './exec.sol';
 
 // Simple example and passthrough for testing
-contract DSSimpleActor is DSActor {
+contract DSSimpleActor is DSExec {
     function execute(address target, bytes calldata, uint value)
     {
         exec(target, calldata, value);
@@ -58,8 +58,8 @@ contract CallReceiver {
     }
 }
 
-// actually tests "SimpleActorTest"
-contract DSActorTest is DSTest {
+// actually tests "DSSimpleActor"
+contract DSExecTest is DSTest {
     bytes calldata;
     DSSimpleActor a;
     CallReceiver cr;
