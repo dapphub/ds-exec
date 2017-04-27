@@ -32,4 +32,26 @@ contract DSExec {
             throw;
         }
     }
+
+    // Convenience aliases
+    function exec( address t, bytes c )
+        internal
+    {
+        exec(t, 0, c);
+    }
+    function exec( address t, uint256 v )
+        internal
+    {
+        bytes memory c; exec(t, v, c);
+    }
+    function tryExec( address t, bytes c )
+        internal
+    {
+        tryExec(t, 0, c);
+    }
+    function tryExec( address t, uint256 v )
+        internal
+    {
+        bytes memory c; tryExec(t, v, c);
+    }
 }
