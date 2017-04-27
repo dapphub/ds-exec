@@ -16,7 +16,7 @@
 
 // A base contract used by anything that wants to do "untyped" calls
 
-pragma solidity ^0.4.10;
+pragma solidity ^0.4.8;
 
 contract DSExec {
     function tryExec( address target, bytes calldata, uint value)
@@ -37,21 +37,21 @@ contract DSExec {
     function exec( address t, bytes c )
         internal
     {
-        exec(t, 0, c);
+        exec(t, c, 0);
     }
     function exec( address t, uint256 v )
         internal
     {
-        bytes memory c; exec(t, v, c);
+        bytes memory c; exec(t, c, v);
     }
     function tryExec( address t, bytes c )
         internal
     {
-        tryExec(t, 0, c);
+        tryExec(t, c, 0);
     }
     function tryExec( address t, uint256 v )
         internal
     {
-        bytes memory c; tryExec(t, v, c);
+        bytes memory c; tryExec(t, c, v);
     }
 }
