@@ -46,12 +46,14 @@ contract DSExec {
     }
     function tryExec( address t, bytes c )
         internal
+        returns (bool)
     {
-        tryExec(t, c, 0);
+        return tryExec(t, c, 0);
     }
     function tryExec( address t, uint256 v )
         internal
+        returns (bool)
     {
-        bytes memory c; tryExec(t, c, v);
+        bytes memory c; return tryExec(t, c, v);
     }
 }
