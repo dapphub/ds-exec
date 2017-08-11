@@ -67,7 +67,7 @@ contract DSExecTest is DSTest {
         assert(this.balance > 0);
         
         a = new DSSimpleActor();
-        if (!a.send(10 wei)) throw;
+        if (!a.send(10 wei)) revert();
 
         cr = new CallReceiver();
     }
