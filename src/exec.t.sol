@@ -45,7 +45,7 @@ contract CallReceiver {
         if( data.length > last_calldata.length ) {
             return false;
         }
-        for( var i = 0; i < data.length; i++ ) {
+        for (uint i = 0; i < data.length; i++) {
             if( data[i] != last_calldata[i] ) {
                 return false;
             }
@@ -72,14 +72,14 @@ contract DSExecTest is DSTest {
         cr = new CallReceiver();
     }
     function testProxyCall() {
-        for(var i = 0; i < 35; i++) {
+        for (uint i = 0; i < 35; i++) {
             calldata.push(byte(i));
         }
         a.execute(address(cr), calldata, 0);
         assert(cr.compareLastCalldata(calldata));
     }
     function testTryProxyCall() {
-        for(var i = 0; i < 35; i++) {
+        for (uint i = 0; i < 35; i++) {
             calldata.push(byte(i));
         }
         assert(a.tryExecute(address(cr), calldata, 0));
@@ -88,7 +88,7 @@ contract DSExecTest is DSTest {
     function testProxyCallWithValue() {
         assertEq(cr.balance, 0);
 
-        for( var i = 0; i < 35; i++ ) {
+        for (uint i = 0; i < 35; i++ ) {
             calldata.push(byte(i));
         }
         assertEq(a.balance, 10 wei);
@@ -99,7 +99,7 @@ contract DSExecTest is DSTest {
     function testTryProxyCallWithValue() {
         assertEq(cr.balance, 0);
 
-        for( var i = 0; i < 35; i++ ) {
+        for (uint i = 0; i < 35; i++ ) {
             calldata.push(byte(i));
         }
         assertEq(a.balance, 10 wei);
