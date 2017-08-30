@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.13;
 
 import "ds-test/test.sol";
 import './exec.sol';
@@ -76,14 +76,14 @@ contract DSExecTest is DSTest {
             calldata.push(byte(i));
         }
         a.execute(address(cr), calldata, 0);
-        assert(cr.compareLastCalldata(calldata));
+        assertTrue(cr.compareLastCalldata(calldata));
     }
     function testTryProxyCall() {
         for (uint i = 0; i < 35; i++) {
             calldata.push(byte(i));
         }
-        assert(a.tryExecute(address(cr), calldata, 0));
-        assert(cr.compareLastCalldata(calldata));
+        assertTrue(a.tryExecute(address(cr), calldata, 0));
+        assertTrue(cr.compareLastCalldata(calldata));
     }
     function testProxyCallWithValue() {
         assertEq(cr.balance, 0);
@@ -93,7 +93,7 @@ contract DSExecTest is DSTest {
         }
         assertEq(a.balance, 10 wei);
         a.execute(address(cr), calldata, 10 wei);
-        assert(cr.compareLastCalldata(calldata));
+        assertTrue(cr.compareLastCalldata(calldata));
         assertEq(cr.balance, 10 wei);
     }
     function testTryProxyCallWithValue() {
@@ -103,8 +103,8 @@ contract DSExecTest is DSTest {
             calldata.push(byte(i));
         }
         assertEq(a.balance, 10 wei);
-        assert(a.tryExecute(address(cr), calldata, 10 wei));
-        assert(cr.compareLastCalldata(calldata));
+        assertTrue(a.tryExecute(address(cr), calldata, 10 wei));
+        assertTrue(cr.compareLastCalldata(calldata));
         assertEq(cr.balance, 10 wei);
     }
 }
