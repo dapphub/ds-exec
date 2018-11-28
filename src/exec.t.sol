@@ -15,26 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity ^0.4.13;
+pragma solidity >0.4.23;
 
 import "ds-test/test.sol";
 import './exec.sol';
 
 // Simple example and passthrough for testing
 contract DSSimpleActor is DSExec {
-    function execute(address target, bytes calldata, uint value)
+    function execute(address target, bytes memory data, uint value)
         public
     {
-        exec(target, calldata, value);
+        exec(target, data, value);
     }
-    function tryExecute(address target, bytes calldata, uint value)
+    function tryExecute(address target, bytes memory data, uint value)
         public
         returns (bool call_ret)
     {
-        return tryExec(target, calldata, value);
+        return tryExec(target, data, value);
     }
 
-    function() payable public {}
+    function() external payable {}
 }
 
 
@@ -42,7 +42,7 @@ contract DSSimpleActor is DSExec {
 contract CallReceiver {
     bytes last_calldata;
     uint last_value;
-    function compareLastCalldata( bytes data ) public view returns (bool) {
+    function compareLastCalldata(bytes memory data) public view returns (bool) {
         // last_calldata.length might be longer because calldata is padded
         // to be a multiple of the word size
         if( data.length > last_calldata.length ) {
@@ -55,7 +55,7 @@ contract CallReceiver {
         }
         return true;
     }
-    function() payable public {
+    function() external payable {
         last_calldata = msg.data;
         last_value = msg.value;
     }
@@ -63,7 +63,7 @@ contract CallReceiver {
 
 // actually tests "DSSimpleActor"
 contract DSExecTest is DSTest {
-    bytes calldata;
+    bytes data;
     DSSimpleActor a;
     CallReceiver cr;
     function setUp() public {
@@ -76,38 +76,38 @@ contract DSExecTest is DSTest {
     }
     function testProxyCall() public {
         for (uint i = 0; i < 35; i++) {
-            calldata.push(byte(i));
+            data.push(byte(uint8(i)));
         }
-        a.execute(address(cr), calldata, 0);
-        assertTrue(cr.compareLastCalldata(calldata));
+        a.execute(address(cr), data, 0);
+        assertTrue(cr.compareLastCalldata(data));
     }
     function testTryProxyCall() public {
         for (uint i = 0; i < 35; i++) {
-            calldata.push(byte(i));
+            data.push(byte(uint8(i)));
         }
-        assertTrue(a.tryExecute(address(cr), calldata, 0));
-        assertTrue(cr.compareLastCalldata(calldata));
+        assertTrue(a.tryExecute(address(cr), data, 0));
+        assertTrue(cr.compareLastCalldata(data));
     }
     function testProxyCallWithValue() public {
         assertEq(address(cr).balance, 0);
 
         for (uint i = 0; i < 35; i++ ) {
-            calldata.push(byte(i));
+            data.push(byte(uint8(i)));
         }
         assertEq(address(a).balance, 10 wei);
-        a.execute(address(cr), calldata, 10 wei);
-        assertTrue(cr.compareLastCalldata(calldata));
+        a.execute(address(cr), data, 10 wei);
+        assertTrue(cr.compareLastCalldata(data));
         assertEq(address(cr).balance, 10 wei);
     }
     function testTryProxyCallWithValue() public {
         assertEq(address(cr).balance, 0);
 
         for (uint i = 0; i < 35; i++ ) {
-            calldata.push(byte(i));
+            data.push(byte(uint8(i)));
         }
         assertEq(address(a).balance, 10 wei);
-        assertTrue(a.tryExecute(address(cr), calldata, 10 wei));
-        assertTrue(cr.compareLastCalldata(calldata));
+        assertTrue(a.tryExecute(address(cr), data, 10 wei));
+        assertTrue(cr.compareLastCalldata(data));
         assertEq(address(cr).balance, 10 wei);
     }
 }
